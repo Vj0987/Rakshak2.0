@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Rakshak20" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/main</item>
+        <item name="fontFamily">@font/rubik_medium</item>
+    </style>
+
+    <style name="Theme.Rakshak20" parent="Base.Theme.Rakshak20" />
+</resources>

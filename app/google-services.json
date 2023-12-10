@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "480236180184",
+    "project_id": "sih-playbold",
+    "storage_bucket": "sih-playbold.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480236180184:android:1cadc7a6d81ac47b57bdad",
+        "android_client_info": {
+          "package_name": "com.sih.rakshak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480236180184-nq89c8jhnt6sb6fh7ce7vstufcc6ni3h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzk-gDjAwjQeW-C3YIUlhG7TQWrTkc5SI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480236180184-nq89c8jhnt6sb6fh7ce7vstufcc6ni3h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

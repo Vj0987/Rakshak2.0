@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/dashboard"
+        android:icon="@drawable/dashboard_ic"
+        android:title="Dashboard"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/notification"
+        android:icon="@drawable/notification_ic"
+        android:title="Notification"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/account"
+        android:icon="@drawable/account_ic"
+        android:title="Account"
+        tools:ignore="HardcodedText" />
+
+</menu>
