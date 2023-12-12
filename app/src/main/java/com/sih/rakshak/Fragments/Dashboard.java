@@ -1,10 +1,12 @@
 package com.sih.rakshak.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AppOpsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -13,23 +15,30 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.sih.rakshak.AppInfoActivity;
 import com.sih.rakshak.R;
+import com.sih.rakshak.SecurityScanActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +49,13 @@ public class Dashboard extends Fragment {
     private TextView progressTextView, currentBatteryText;
 
     private int currentProgress = 0;
-    private static final int MAX_PROGRESS = 69;
+    private int MAX_PROGRESS = 0;
     private static final int INCREMENT_AMOUNT = 1;
     private static final long LOOP_DELAY = 20;
     private Handler handler;
     View view;
+
+    LinearLayout linearLayout1, linearLayout2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,27 +81,72 @@ public class Dashboard extends Fragment {
         progressTextView = view.findViewById(R.id.progressTextView);
 
         handler = new Handler(Looper.getMainLooper());
-        startProgressLoop();
 
         currentBatteryText = view.findViewById(R.id.currentLevel);
-        registerBatteryReceiver();
 
         try {
-            initiateRecycler();
+            AppOpsManager appOps = (AppOpsManager) requireActivity().getSystemService(Context.APP_OPS_SERVICE);
+            int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), requireActivity().getPackageName());
+
+            if (mode == AppOpsManager.MODE_ALLOWED) {
+                initiateRecycler();
+            } else {
+                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                startActivity(intent);
+                Toast.makeText(requireContext(), "Please Grant Permission.", Toast.LENGTH_SHORT).show();
+            }
+
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
 
+        registerBatteryReceiver();
+        handleViewVisibility();
+
+        handleTextClicks();
+
         return view;
 
+    }
+
+    private void handleTextClicks() {
+        view.findViewById(R.id.openBatterySettings).setOnClickListener(view1 -> {
+            Intent intent = new Intent(android.provider.Settings.ACTION_BATTERY_SAVER_SETTINGS);
+            startActivity(intent);
+        });
+
+        view.findViewById(R.id.openSystemPerm).setOnClickListener(view1 -> {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS);
+            startActivity(intent);
+        });
+
+        view.findViewById(R.id.securityScan).setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), SecurityScanActivity.class));
+        });
+    }
+
+    private void handleViewVisibility() {
+
+        linearLayout1 = view.findViewById(R.id.scanningLayout);
+        linearLayout2 = view.findViewById(R.id.scannerLayout);
+        LottieAnimationView lottieAnimationView = view.findViewById(R.id.scannerAnimation);
+
+        linearLayout2.setVisibility(View.GONE);
+        linearLayout1.setVisibility(View.VISIBLE);
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            linearLayout2.setVisibility(View.VISIBLE);
+            lottieAnimationView.pauseAnimation();
+            linearLayout1.setVisibility(View.GONE);
+            startProgressLoop();
+        }, 2200);
     }
 
     private void initiateRecycler() throws PackageManager.NameNotFoundException {
         List<AppInfo> appsList = getListOfInstalledApps();
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewApps);
-         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-//        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 4));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         AppListAdapter appListAdapter = new AppListAdapter(appsList);
         recyclerView.setAdapter(appListAdapter);
 
@@ -117,7 +173,21 @@ public class Dashboard extends Fragment {
 
                 Drawable icon = ri.activityInfo.loadIcon(pm);
 
-                AppInfo appInfo = new AppInfo(name, icon);
+                try {
+                    PackageInfo packageInfo = pm.getPackageInfo(ri.activityInfo.packageName, PackageManager.GET_PERMISSIONS);
+                    String[] requestedPermissions = packageInfo.requestedPermissions;
+                    // long installedDate = packageInfo.;
+
+                    if (requestedPermissions != null) {
+                        for (String permission : requestedPermissions) {
+                            Log.d("AppPermissions", "App: " + name + ", Permission: " + permission);
+                        }
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                AppInfo appInfo = new AppInfo(name, icon, ri);
                 appsList.add(appInfo);
             }
         }
@@ -145,7 +215,12 @@ public class Dashboard extends Fragment {
                 int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
                 float batteryPct = (level / (float) scale) * 100;
-                currentBatteryText.setText("Current Battery Percentage: " + batteryPct + " %");
+
+                MAX_PROGRESS = Math.round(batteryPct);
+                int temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0);
+                float temperatureCelsius = temperature / 10.0f;
+
+                currentBatteryText.setText("Overall Battery Health: Good\nBattery Temperature: " + temperatureCelsius + " °C");
             }
         }
     };
@@ -154,13 +229,20 @@ public class Dashboard extends Fragment {
         private final String appName;
         private final Drawable appIcon;
 
-        public AppInfo(String appName, Drawable appIcon) {
+        private final ResolveInfo resolveInfo;
+
+        public AppInfo(String appName, Drawable appIcon, ResolveInfo ri) {
             this.appName = appName;
             this.appIcon = appIcon;
+            resolveInfo = ri;
         }
 
         public String getAppName() {
             return appName;
+        }
+
+        public ResolveInfo getResolveInfo() {
+            return resolveInfo;
         }
 
         public Drawable getAppIcon() {
@@ -169,16 +251,19 @@ public class Dashboard extends Fragment {
     }
 
     private void startProgressLoop() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateProgress(currentProgress);
-                currentProgress += INCREMENT_AMOUNT;
-                if (currentProgress <= MAX_PROGRESS) {
-                    handler.postDelayed(this, LOOP_DELAY);
+
+        if (MAX_PROGRESS != 0) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateProgress(currentProgress);
+                    currentProgress += INCREMENT_AMOUNT;
+                    if (currentProgress <= MAX_PROGRESS) {
+                        handler.postDelayed(this, LOOP_DELAY);
+                    }
                 }
-            }
-        }, LOOP_DELAY);
+            }, LOOP_DELAY);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -213,9 +298,13 @@ public class Dashboard extends Fragment {
         public void onBindViewHolder(AppViewHolder holder, int position) {
             AppInfo appInfo = apps.get(position);
             holder.appNameTextView.setText(appInfo.getAppName());
-
-            // Assuming AppInfo has a property for app icon
             holder.appIconImageView.setImageDrawable(appInfo.getAppIcon());
+
+            holder.appIconImageView.setOnClickListener(view1 -> {
+                Intent intent = new Intent(view1.getContext(), AppInfoActivity.class);
+                intent.putExtra("AppInfo", appInfo.getResolveInfo());
+                view1.getContext().startActivity(intent);
+            });
         }
 
         @Override

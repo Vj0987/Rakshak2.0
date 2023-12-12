@@ -27,150 +27,535 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28sp"
+                android:layout_marginTop="18sp"
                 android:text="@string/app_name"
                 android:textColor="#5F5DAA"
                 android:textSize="40sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/scanningLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28sp"
-                android:text="@string/battery_health"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <TextView
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/scannerAnimation"
+                    android:layout_width="match_parent"
+                    android:layout_height="200sp"
+                    android:layout_marginTop="20sp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/scanner" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28sp"
+                    android:gravity="center_horizontal"
+                    android:text="Scanning..."
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/scannerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10sp"
-                android:alpha="0.8"
-                android:text="Low Battery health indicates some battery issues..."
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/currentLevel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12sp"
-                android:text="@string/app_name"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                tools:ignore="HardcodedText" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="100sp"
-                android:layout_marginTop="30sp"
-                app:cardBackgroundColor="@color/main_light"
-                app:cardCornerRadius="12sp"
-                app:cardElevation="10sp"
-                app:strokeColor="@color/main_light">
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/main_light"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                    <FrameLayout
-                        android:id="@+id/greenFrameLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/holo_green_dark">
-
-                        <TextView
-                            android:id="@+id/progressTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_margin="10sp"
-                            android:text="66 %"
-                            android:textColor="@color/white"
-                            android:textSize="24sp" />
-
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:id="@+id/mainLightFrameLayout"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/securityScan"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10sp"
                         android:layout_weight="1"
-                        android:background="@color/main_light" />
+                        app:cardBackgroundColor="@color/main_light"
+                        app:cardCornerRadius="12sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="@color/main_light">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4sp"
+                            android:layout_marginBottom="12sp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="38sp"
+                                android:layout_height="38sp"
+                                android:layout_margin="10sp"
+                                android:src="@drawable/security_ic"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10sp"
+                                android:layout_marginTop="8sp"
+                                android:layout_marginEnd="10sp"
+                                android:alpha="0.8"
+                                android:singleLine="true"
+                                android:text="Security Scan"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:ignore="HardcodedText" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10sp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/main_light"
+                        app:cardCornerRadius="12sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="@color/main_light">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4sp"
+                            android:layout_marginBottom="12sp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="38sp"
+                                android:layout_height="38sp"
+                                android:layout_margin="10sp"
+                                android:src="@drawable/wifi_ic"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10sp"
+                                android:layout_marginTop="8sp"
+                                android:layout_marginEnd="10sp"
+                                android:alpha="0.8"
+                                android:singleLine="true"
+                                android:text="Wifi Scan"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:ignore="HardcodedText" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1sp"
-                android:layout_marginTop="30sp"
-                android:background="@color/white"
-                tools:ignore="SmallSp" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10sp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/main_light"
+                        app:cardCornerRadius="12sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="@color/main_light">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28sp"
-                android:text="System Permissions"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4sp"
+                            android:layout_marginBottom="12sp"
+                            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10sp"
-                android:alpha="0.8"
-                android:text="Check permissions your system App is Asking for..."
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                tools:ignore="HardcodedText" />
+                            <ImageView
+                                android:layout_width="38sp"
+                                android:layout_height="38sp"
+                                android:layout_margin="10sp"
+                                android:src="@drawable/cleaner_ic"
+                                tools:ignore="ContentDescription" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewApps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20sp"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_app" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10sp"
+                                android:layout_marginTop="8sp"
+                                android:layout_marginEnd="10sp"
+                                android:alpha="0.8"
+                                android:singleLine="true"
+                                android:text="Cleaner"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:ignore="HardcodedText" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1sp"
-                android:layout_marginTop="30sp"
-                android:background="@color/white"
-                tools:ignore="SmallSp" />
+                        </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28sp"
-                android:text="Check Apps"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                    </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10sp"
-                android:alpha="0.8"
-                android:text="Verify App Fingerprints to recheck Authenticity..."
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:layout_marginBottom="180sp"
-                tools:ignore="HardcodedText" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10sp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/main_light"
+                        app:cardCornerRadius="12sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="@color/main_light">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4sp"
+                            android:layout_marginBottom="12sp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="38sp"
+                                android:layout_height="38sp"
+                                android:layout_margin="10sp"
+                                android:src="@drawable/url_ic"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10sp"
+                                android:layout_marginTop="8sp"
+                                android:layout_marginEnd="10sp"
+                                android:alpha="0.8"
+                                android:singleLine="true"
+                                android:text="Check URL"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:ignore="HardcodedText" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10sp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/main_light"
+                        app:cardCornerRadius="12sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="@color/main_light">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4sp"
+                            android:layout_marginBottom="12sp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="38sp"
+                                android:layout_height="30sp"
+                                android:layout_margin="10sp"
+                                android:src="@drawable/spam_msg_ic"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10sp"
+                                android:layout_marginTop="16sp"
+                                android:layout_marginEnd="10sp"
+                                android:alpha="0.8"
+                                android:singleLine="true"
+                                android:text="Spam Messages"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:ignore="HardcodedText" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10sp"
+                        android:layout_weight="1"
+                        app:cardBackgroundColor="@color/main_light"
+                        app:cardCornerRadius="12sp"
+                        app:cardElevation="10sp"
+                        app:strokeColor="@color/main_light">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4sp"
+                            android:layout_marginBottom="12sp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="38sp"
+                                android:layout_height="38sp"
+                                android:layout_margin="10sp"
+                                android:src="@drawable/record_log_ic"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10sp"
+                                android:layout_marginTop="8sp"
+                                android:layout_marginEnd="10sp"
+                                android:alpha="0.8"
+                                android:singleLine="true"
+                                android:text="Security Log"
+                                android:textColor="@color/white"
+                                android:textSize="16sp"
+                                tools:ignore="HardcodedText" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32sp"
+                    android:text="System Permissions"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    app:cardBackgroundColor="@color/main_light"
+                    app:cardCornerRadius="12sp"
+                    app:cardElevation="10sp"
+                    app:strokeColor="@color/main_light">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12sp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10sp"
+                            android:alpha="0.8"
+                            android:text="Check permissions your system App is Asking for..."
+                            android:textColor="@color/white"
+                            android:textSize="15sp"
+                            tools:ignore="HardcodedText" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewApps"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20sp"
+                            android:layout_marginBottom="10sp"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_app" />
+
+                        <TextView
+                            android:id="@+id/openSystemPerm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10sp"
+                            android:alpha="0.9"
+                            android:text="View System App Settings >"
+                            android:textColor="#8282DD"
+                            android:textSize="14sp"
+                            tools:ignore="HardcodedText" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1sp"
+                    android:layout_marginTop="30sp"
+                    android:background="@color/white"
+                    tools:ignore="SmallSp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28sp"
+                    android:text="@string/battery_health"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    app:cardBackgroundColor="@color/main_light"
+                    app:cardCornerRadius="12sp"
+                    app:cardElevation="10sp"
+                    app:strokeColor="@color/main_light">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12sp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10sp"
+                            android:alpha="0.8"
+                            android:text="Low Battery health indicates some battery issues..."
+                            android:textColor="@color/white"
+                            android:textSize="15sp"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/currentLevel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12sp"
+                            android:lineHeight="22sp"
+                            android:text="@string/app_name"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            tools:ignore="HardcodedText,UnusedAttribute" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20sp"
+                            android:layout_marginBottom="10sp"
+                            app:cardBackgroundColor="@color/main_light"
+                            app:cardCornerRadius="12sp"
+                            app:cardElevation="12sp"
+                            app:strokeColor="@color/main_light">
+
+                            <LinearLayout
+                                android:id="@+id/linearLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@color/main_light"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <FrameLayout
+                                    android:id="@+id/greenFrameLayout"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="#41BC0D">
+
+                                    <TextView
+                                        android:id="@+id/progressTextView"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:layout_margin="15sp"
+                                        android:text="66 %"
+                                        android:textColor="@color/white"
+                                        android:textSize="18sp"
+                                        tools:ignore="HardcodedText" />
+
+                                </FrameLayout>
+
+                                <FrameLayout
+                                    android:id="@+id/mainLightFrameLayout"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="@color/main_light" />
+
+
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:id="@+id/openBatterySettings"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10sp"
+                            android:alpha="0.9"
+                            android:text="View Battery Settings >"
+                            android:textColor="#8282DD"
+                            android:textSize="14sp"
+                            tools:ignore="HardcodedText" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1sp"
+                    android:layout_marginTop="30sp"
+                    android:background="@color/white"
+                    tools:ignore="SmallSp" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="450sp">
+
+                    <TextView
+                        android:id="@+id/liveSecured"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:text="Live\nSecured"
+                        android:textColor="@color/main_light"
+                        android:textSize="65sp"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/liveSecured"
+                        android:layout_gravity="bottom"
+                        android:layout_marginStart="5sp"
+                        android:layout_marginTop="10sp"
+                        android:text="Developed by Team Let\'s Play Bold"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
