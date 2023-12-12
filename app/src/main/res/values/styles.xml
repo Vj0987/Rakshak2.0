@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="CheckBoxColor">
+
+        <item name="colorPrimary">@color/white</item>
+        <item name="checkedIconTint">@color/white</item>
+
+    </style>
+
 </resources>

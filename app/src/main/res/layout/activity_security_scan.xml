@@ -25,6 +25,42 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="match_parent"
+                android:layout_height="300sp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/searching"
+                app:lottie_repeatMode="reverse" />
+
+            <TextView
+                android:id="@+id/scanFeedLive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="35sp"
+                android:layout_marginEnd="30sp"
+                android:alpha="0.7"
+                android:ellipsize="start"
+                android:gravity="center_horizontal"
+                android:padding="3sp"
+                android:text="@string/app_name"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/scanResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="35sp"
+                android:layout_marginEnd="30sp"
+                android:gravity="center_horizontal"
+                android:padding="3sp"
+                android:singleLine="true"
+                android:text="Scanning..."
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
 
