@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main"
+    android:orientation="vertical"
+    tools:context=".WifiUtil">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/seScanToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+        app:title="Wifi Scanner"
+        app:titleTextColor="@color/white" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200sp"
+                android:alpha="0.5"
+                android:src="@drawable/wifi_static" />
+
+            <TextView
+                android:id="@+id/checkingUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="35sp"
+                android:layout_marginEnd="30sp"
+                android:alpha="0.7"
+                android:ellipsize="start"
+                android:gravity="center_horizontal"
+                android:padding="3sp"
+                android:text="Checking Wifi Connections..."
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/wifiList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="35sp"
+                android:layout_marginEnd="30sp"
+                android:padding="3sp"
+                android:text=""
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

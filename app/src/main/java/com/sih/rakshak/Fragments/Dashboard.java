@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -17,7 +16,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +35,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.sih.rakshak.AppInfoActivity;
+import com.sih.rakshak.CleanerActivity;
 import com.sih.rakshak.R;
 import com.sih.rakshak.SecurityScanActivity;
+import com.sih.rakshak.WifiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +123,14 @@ public class Dashboard extends Fragment {
         view.findViewById(R.id.securityScan).setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), SecurityScanActivity.class));
         });
+
+        view.findViewById(R.id.cleanerAct).setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), CleanerActivity.class));
+        });
+
+        view.findViewById(R.id.wifiScan).setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), WifiUtil.class));
+        });
     }
 
     private void handleViewVisibility() {
@@ -172,20 +180,6 @@ public class Dashboard extends Fragment {
                 }
 
                 Drawable icon = ri.activityInfo.loadIcon(pm);
-
-                try {
-                    PackageInfo packageInfo = pm.getPackageInfo(ri.activityInfo.packageName, PackageManager.GET_PERMISSIONS);
-                    String[] requestedPermissions = packageInfo.requestedPermissions;
-                    // long installedDate = packageInfo.;
-
-                    if (requestedPermissions != null) {
-                        for (String permission : requestedPermissions) {
-                            Log.d("AppPermissions", "App: " + name + ", Permission: " + permission);
-                        }
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
 
                 AppInfo appInfo = new AppInfo(name, icon, ri);
                 appsList.add(appInfo);

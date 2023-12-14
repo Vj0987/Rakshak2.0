@@ -1,13 +1,8 @@
 package com.sih.rakshak;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,16 +13,21 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.dongliu.apk.parser.ApkParser;
-import net.dongliu.apk.parser.bean.ApkMeta;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SecurityScanActivity extends AppCompatActivity {
+
     private TextView fileTextView, resultTextview;
+
+    private ExecutorService executorService;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,30 +45,18 @@ public class SecurityScanActivity extends AppCompatActivity {
         fileTextView = findViewById(R.id.scanFeedLive);
         resultTextview = findViewById(R.id.scanResult);
 
-        new ApkScanTask().execute();
-
+        startApkScan();
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class ApkScanTask extends AsyncTask<Void, String, Void> {
+    private void startApkScan() {
+        handler = new Handler(Looper.getMainLooper());
+        executorService = Executors.newFixedThreadPool(5);
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            List<String> apkFilePaths = getAllInstalledApks();
+        getAllInstalledApks();
+    }
 
-            for (String apkFilePath : apkFilePaths) {
-                publishProgress(apkFilePath);
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        private List<String> getAllInstalledApks() {
+    private void getAllInstalledApks() {
+        executorService.execute(() -> {
             List<String> apkFilePaths = new ArrayList<>();
 
             List<PackageInfo> packages = getPackageManager().getInstalledPackages(0);
@@ -78,34 +66,49 @@ public class SecurityScanActivity extends AppCompatActivity {
                 apkFilePaths.add(apkFilePath);
             }
 
-            return apkFilePaths;
-        }
+            handler.post(() -> onApkScanComplete(apkFilePaths));
+        });
+    }
 
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            for (String value : values) {
+    @SuppressLint("SetTextI18n")
+    private void onApkScanComplete(List<String> apkFilePaths) {
+        int delayMillis = 300;
+        final int[] currentIndex = {0};
+
+        Runnable updateUiRunnable = new Runnable() {
+            @Override
+            public void run() {
                 fileTextView.setSingleLine();
                 fileTextView.setEllipsize(TextUtils.TruncateAt.START);
-                fileTextView.setText(value);
-            }
-        }
 
-        @SuppressLint("SetTextI18n")
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            fileTextView.setText("Scanning Done.");
-            resultTextview.setText("No Threat Found!");
-            Toast.makeText(SecurityScanActivity.this, "Scanning Completed", Toast.LENGTH_SHORT).show();
-        }
+                if (currentIndex[0] < apkFilePaths.size()) {
+                    String apkFilePath = apkFilePaths.get(currentIndex[0]);
+                    fileTextView.setText(apkFilePath);
+
+                    handler.postDelayed(this, delayMillis);
+
+                    currentIndex[0]++;
+                } else {
+                    fileTextView.setText("Scanning Done.");
+                    resultTextview.setText("No Threat Found!");
+                    Toast.makeText(SecurityScanActivity.this, "Scanning Completed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        handler.postDelayed(updateUiRunnable, delayMillis);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executorService.shutdownNow();
     }
 
     private void setNavColor() {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setNavigationBarColor(getResources().getColor(R.color.main, getTheme()));
-
     }
 
     @Override
