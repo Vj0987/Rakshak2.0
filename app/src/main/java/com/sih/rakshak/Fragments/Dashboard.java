@@ -36,7 +36,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.sih.rakshak.AppInfoActivity;
 import com.sih.rakshak.CleanerActivity;
+import com.sih.rakshak.MessageActivity;
 import com.sih.rakshak.R;
+import com.sih.rakshak.SecurityLogActivity;
 import com.sih.rakshak.SecurityScanActivity;
 import com.sih.rakshak.WifiUtil;
 
@@ -130,6 +132,14 @@ public class Dashboard extends Fragment {
 
         view.findViewById(R.id.wifiScan).setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), WifiUtil.class));
+        });
+
+        view.findViewById(R.id.securityLogActivity).setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), SecurityLogActivity.class));
+        });
+
+        view.findViewById(R.id.messageActivity).setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), MessageActivity.class));
         });
     }
 

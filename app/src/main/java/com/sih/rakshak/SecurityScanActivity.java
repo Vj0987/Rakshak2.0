@@ -72,7 +72,7 @@ public class SecurityScanActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void onApkScanComplete(List<String> apkFilePaths) {
-        int delayMillis = 300;
+        int delayMillis = 100;
         final int[] currentIndex = {0};
 
         Runnable updateUiRunnable = new Runnable() {
