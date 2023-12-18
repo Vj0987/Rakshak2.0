@@ -34,8 +34,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.sih.rakshak.AppInfoActivity;
+import com.sih.rakshak.CheckURLActivity;
 import com.sih.rakshak.CleanerActivity;
+import com.sih.rakshak.CleanerWithSActivity;
 import com.sih.rakshak.MessageActivity;
 import com.sih.rakshak.R;
 import com.sih.rakshak.SecurityLogActivity;
@@ -107,7 +113,27 @@ public class Dashboard extends Fragment {
 
         handleTextClicks();
 
+        setBatteryGraph();
+
         return view;
+
+    }
+
+    private void setBatteryGraph() {
+        LineChart lineChart = view.findViewById(R.id.lineChart);
+
+        // Example data for demonstration
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(1, 20));
+        entries.add(new Entry(2, 35));
+        entries.add(new Entry(3, 18));
+        entries.add(new Entry(4, 27));
+
+        LineDataSet dataSet = new LineDataSet(entries, "Label"); // Add label if needed
+        LineData lineData = new LineData(dataSet);
+
+        lineChart.setData(lineData);
+        lineChart.invalidate(); // Refresh the chart
 
     }
 
@@ -127,7 +153,7 @@ public class Dashboard extends Fragment {
         });
 
         view.findViewById(R.id.cleanerAct).setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), CleanerActivity.class));
+            startActivity(new Intent(getContext(), CleanerWithSActivity.class));
         });
 
         view.findViewById(R.id.wifiScan).setOnClickListener(view1 -> {
@@ -140,6 +166,10 @@ public class Dashboard extends Fragment {
 
         view.findViewById(R.id.messageActivity).setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), MessageActivity.class));
+        });
+
+        view.findViewById(R.id.checkURLActivity).setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), CheckURLActivity.class));
         });
     }
 

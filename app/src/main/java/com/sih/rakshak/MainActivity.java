@@ -1,7 +1,10 @@
 package com.sih.rakshak;
 
 import android.annotation.SuppressLint;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         setNavColor();
 
         loadFragment(new Dashboard());
+
+        calculateApkHash();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -55,6 +60,22 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
+    }
+
+    private void calculateApkHash() {
+        try {
+            PackageManager packageManager = getPackageManager();
+            String packageName = getPackageName();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo("com.whatsapp", 0);
+
+            String appFilePath = applicationInfo.sourceDir;
+            ApkHashCalculator.HashResult result = ApkHashCalculator.getApkSHA256(appFilePath);
+
+            String message = "SHA-256 Hash: " + result.getSha256Hash() + "\nFile Path: " + result.getFilePath();
+            Log.d("MainActivity", "calculateApkHash: " + message);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

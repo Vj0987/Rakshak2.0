@@ -45,14 +45,21 @@
                 android:gravity="center_horizontal"
                 android:padding="3sp"
                 android:text="Checking Temporary files..."
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:ignore="HardcodedText" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/dataTypesRec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="22sp" />
 
             <TextView
                 android:id="@+id/checkResult"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30sp"
-                android:layout_marginTop="35sp"
+                android:layout_marginTop="5sp"
                 android:layout_marginEnd="30sp"
                 android:gravity="center_horizontal"
                 android:padding="3sp"

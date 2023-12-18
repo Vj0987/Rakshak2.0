@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,20 +21,37 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.File;
 import java.util.Arrays;
 
-public class CleanerActivity extends AppCompatActivity {
+public class CleanerWithSActivity extends AppCompatActivity {
 
     private TextView textView1;
     private TextView textView2;
+
+    private TextView tv1;
+    private TextView tv2;
+    private TextView tv3;
+    private long totalTmpSize = 0;
+    private long totalLogSize = 0;
+    private long totalCacheSize = 0;
+
+    ProgressBar pb1, pb2, pb3, pb4;
 
     private static final int REQUEST_MANAGE_ALL_FILES_ACCESS_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cleaner);
+        setContentView(R.layout.activity_cleaner_with_sactivity);
 
         textView1 = findViewById(R.id.checkingUpdate);
         textView2 = findViewById(R.id.checkResult);
+
+        tv1 = findViewById(R.id.checkResult1);
+        tv2 = findViewById(R.id.checkResult2);
+        tv3 = findViewById(R.id.checkResult3);
+        pb1 = findViewById(R.id.progress1);
+        pb2 = findViewById(R.id.progress2);
+        pb3 = findViewById(R.id.progress3);
+        pb4 = findViewById(R.id.progress4);
 
         Button button = findViewById(R.id.cleanDataButton);
 
@@ -72,6 +91,20 @@ public class CleanerActivity extends AppCompatActivity {
             super.onPostExecute(result);
             textView1.setText("Scanning Done");
             textView2.setText(result);
+
+            setTextViews();
+        }
+
+        @SuppressLint("SetTextI18n")
+        private void setTextViews() {
+            tv2.setText("" + formatSize(totalCacheSize));
+            tv1.setText("" + formatSize(totalLogSize));
+            tv3.setText("" + formatSize(totalTmpSize));
+
+            pb4.setVisibility(View.GONE);
+            pb3.setVisibility(View.GONE);
+            pb2.setVisibility(View.GONE);
+            pb1.setVisibility(View.GONE);
         }
 
     }
@@ -101,7 +134,7 @@ public class CleanerActivity extends AppCompatActivity {
 
         totalJunkSize += calculateJunkSize(externalStorage);
 
-        result.append("Total Junk Size: ").append(formatSize(totalJunkSize)).append("\n");
+        result.append(formatSize(totalJunkSize));
 
         return result.toString();
     }
@@ -130,6 +163,26 @@ public class CleanerActivity extends AppCompatActivity {
         return totalSize;
     }
 
+    private void processJunkFile(File file) {
+        String extension = getFileExtension(file);
+        long fileSize = file.length();
+
+        if (Arrays.asList("tmp", "log", "cache").contains(extension)) {
+            switch (extension) {
+                case "tmp":
+                    totalTmpSize += fileSize;
+                    break;
+                case "log":
+                    totalLogSize += fileSize;
+                    break;
+                case "cache":
+                    totalCacheSize += fileSize;
+                    break;
+            }
+        }
+
+    }
+
     private String formatSize(long size) {
         String[] units = {"B", "KB", "MB", "GB", "TB"};
         int unitIndex = 0;
@@ -142,14 +195,16 @@ public class CleanerActivity extends AppCompatActivity {
     }
 
     private boolean isJunkFile(File file) {
-        String extension = getFileExtension(file);
-        if (Arrays.asList("tmp", "log", "cache").contains(extension)) {
-            return true;
-        }
-
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            return files != null && files.length == 0;
+            if (files != null) {
+                for (File subFile : files) {
+                    processJunkFile(subFile);
+                }
+                return files.length == 0;
+            }
+        } else {
+            processJunkFile(file);
         }
 
         return false;

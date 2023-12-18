@@ -35,13 +35,13 @@ public class SplashScreen extends AppCompatActivity {
             }
             finish();
 
-        }, 1500);
+        }, 1000);
     }
 
     private void setAnimation() {
         ImageView splashImage = findViewById(R.id.splashImage);
         ObjectAnimator fadeIn = ObjectAnimator.ofFloat(splashImage, "alpha", 0f, 1f);
-        fadeIn.setDuration(1500);
+        fadeIn.setDuration(1000);
         fadeIn.start();
 
     }

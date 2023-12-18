@@ -44,6 +44,7 @@ dependencies {
 
     implementation("net.dongliu:apk-parser:2.4.0")
     implementation("commons-io:commons-io:2.15.1")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

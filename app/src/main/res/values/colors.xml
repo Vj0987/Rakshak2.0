@@ -2,8 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="main_light">#242342</color>
-    <!--    <color name="main_light">#32315d</color>-->
-    <!--    <color name="main">#242342</color>-->
-    <color name="main">#141423</color>
+    <!--    <color name="main_light">#242342</color>-->
+    <!--    <color name="main">#141423</color>-->
+    <color name="main_light">#221C1C</color>
+<!--    <color name="main_light">#222020</color>-->
+    <color name="main">#000000</color>
 </resources>
