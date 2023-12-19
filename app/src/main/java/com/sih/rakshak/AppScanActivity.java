@@ -1,53 +1,142 @@
 package com.sih.rakshak;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AppScanActivity extends AppCompatActivity {
+    int cnt1 = 0;
+    int cnt2 = 0;
+    TextView appNameTextView, appVersionTextView;
+    ImageView appIconImageView;
+    TextView malApp, unMalApp;
+
+    List<ApplicationInfo> appInfo = new ArrayList<>();
+    List<String> appProbability = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_scan);
 
+        initiateViews();
+
         traverseInstalledApps();
     }
 
+    private void initiateViews() {
+        appNameTextView = findViewById(R.id.appNameTextView);
+        appVersionTextView = findViewById(R.id.appVersionTextView);
+        appIconImageView = findViewById(R.id.appIconImageView);
+
+        malApp = findViewById(R.id.malApp);
+        unMalApp = findViewById(R.id.unMallApp);
+
+    }
+
+    @SuppressLint("SetTextI18n")
     private void traverseInstalledApps() {
-        List<String> apkFilePaths = new ArrayList<>();
+        long currentTime = System.currentTimeMillis();
+        long sixMonthsInMillis = 30L * 24L * 60L * 60L * 1000L;
 
         @SuppressLint("InlinedApi") List<PackageInfo> packages = getPackageManager().getInstalledPackages(PackageManager.INSTALL_REASON_USER);
         for (PackageInfo packageInfo : packages) {
             ApplicationInfo appInfo = packageInfo.applicationInfo;
-
             if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0 && appInfo.name != null) {
-                String apkFilePath = appInfo.sourceDir;
-                apkFilePaths.add(apkFilePath);
-
-                new Thread(() -> {
-                    String sha256Key = getSHA256Key(apkFilePath);
-                    Log.d("AppScanActivity", "traverseInstalledApps: " + appInfo.name + " " + sha256Key);
-                }).start();
+                if (currentTime - packageInfo.lastUpdateTime <= sixMonthsInMillis) {
+                    String apkFilePath = appInfo.sourceDir;
+                    new Thread(() -> {
+                        String shaKey = getSHA256Key(apkFilePath);
+                        sendSHARequest(shaKey, appInfo);
+                    }).start();
+                }
             }
         }
     }
 
+    private void sendSHARequest(String shaKey, ApplicationInfo applicationInfo) {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build();
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://172.92.1.42:5000/").addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        Call<String> call = apiService.getSHAKey(shaKey);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                if (response.isSuccessful()) {
+                    String result = response.body();
+                    Log.d("RESULT-APP-T", "onResponse: " + result);
+                    setChanges(applicationInfo, result);
+                } else {
+                    Log.d("RESULT-APP-F", "onResponse: " + response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("RESULT-APP-E", "onResponse: " + t);
+            }
+        });
+    }
+
+    private void setChanges(ApplicationInfo applicationInfo, String result) {
+
+        PackageManager packageManager = getPackageManager();
+        CharSequence appName = applicationInfo.loadLabel(packageManager);
+        appNameTextView.setText(appName);
+
+        appVersionTextView.setText(applicationInfo.packageName);
+
+        PackageManager pm = getPackageManager();
+        Drawable appIcon = applicationInfo.loadIcon(pm);
+        appIconImageView.setImageDrawable(appIcon);
+
+        appInfo.add(applicationInfo);
+        appProbability.add(result);
+
+        setResultWithText(Integer.parseInt(result));
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setResultWithText(int prob) {
+
+        if (prob > 75) {
+            cnt1++;
+            malApp.setText(cnt1 + " ");
+        } else {
+            cnt2++;
+            unMalApp.setText(cnt2 + "");
+        }
+    }
 
     private String getSHA256Key(String filePath) {
         try {
@@ -73,5 +162,13 @@ public class AppScanActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void openReport(View view) {
+        Intent intent = new Intent(this, AppReportActivity.class);
+        intent.putParcelableArrayListExtra("appInfoList", new ArrayList<>(appInfo));
+        intent.putStringArrayListExtra("probability", new ArrayList<>(appProbability));
+        startActivity(intent);
+
     }
 }

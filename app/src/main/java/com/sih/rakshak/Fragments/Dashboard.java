@@ -38,6 +38,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.sih.rakshak.AllAppsActivity;
 import com.sih.rakshak.AppInfoActivity;
 import com.sih.rakshak.AppScanActivity;
 import com.sih.rakshak.CheckURLActivity;
@@ -154,7 +155,7 @@ public class Dashboard extends Fragment {
         });
 
         view.findViewById(R.id.cleanerAct).setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), CleanerActivity.class));
+            startActivity(new Intent(getContext(), CleanerWithSActivity.class));
             // startActivity(new Intent(getContext(), CleanerWithSActivity.class));
         });
 
@@ -173,6 +174,16 @@ public class Dashboard extends Fragment {
         view.findViewById(R.id.checkURLActivity).setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), CheckURLActivity.class));
         });
+
+        view.findViewById(R.id.moreApps).setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), CheckURLActivity.class));
+        });
+
+        view.findViewById(R.id.moreApps).setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), AllAppsActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     private void handleViewVisibility() {
@@ -196,9 +207,15 @@ public class Dashboard extends Fragment {
         List<AppInfo> appsList = getListOfInstalledApps();
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewApps);
+        RecyclerView recyclerView2 = view.findViewById(R.id.recyclerUnused);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        AppListAdapter appListAdapter = new AppListAdapter(appsList);
+        AppListAdapter appListAdapter = new AppListAdapter(appsList.subList(0, 4));
         recyclerView.setAdapter(appListAdapter);
+
+        recyclerView2.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        AppListAdapter appListAdapter2 = new AppListAdapter(appsList);
+        recyclerView2.setAdapter(appListAdapter2);
 
     }
 
@@ -349,8 +366,8 @@ public class Dashboard extends Fragment {
         }
 
         public static class AppViewHolder extends RecyclerView.ViewHolder {
-            TextView appNameTextView;
-            ImageView appIconImageView;
+            public TextView appNameTextView;
+            public ImageView appIconImageView;
 
             public AppViewHolder(View itemView) {
                 super(itemView);
