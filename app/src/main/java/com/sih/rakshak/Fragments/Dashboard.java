@@ -39,6 +39,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sih.rakshak.AppInfoActivity;
+import com.sih.rakshak.AppScanActivity;
 import com.sih.rakshak.CheckURLActivity;
 import com.sih.rakshak.CleanerActivity;
 import com.sih.rakshak.CleanerWithSActivity;
@@ -129,11 +130,11 @@ public class Dashboard extends Fragment {
         entries.add(new Entry(3, 18));
         entries.add(new Entry(4, 27));
 
-        LineDataSet dataSet = new LineDataSet(entries, "Label"); // Add label if needed
+        LineDataSet dataSet = new LineDataSet(entries, "Label");
         LineData lineData = new LineData(dataSet);
 
         lineChart.setData(lineData);
-        lineChart.invalidate(); // Refresh the chart
+        lineChart.invalidate();
 
     }
 
@@ -149,11 +150,12 @@ public class Dashboard extends Fragment {
         });
 
         view.findViewById(R.id.securityScan).setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), SecurityScanActivity.class));
+            startActivity(new Intent(getContext(), AppScanActivity.class));
         });
 
         view.findViewById(R.id.cleanerAct).setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), CleanerWithSActivity.class));
+            startActivity(new Intent(getContext(), CleanerActivity.class));
+            // startActivity(new Intent(getContext(), CleanerWithSActivity.class));
         });
 
         view.findViewById(R.id.wifiScan).setOnClickListener(view1 -> {

@@ -23,7 +23,7 @@ public class WifiUtil extends AppCompatActivity {
     private ExecutorService executorService;
 
     private static final String TAG = "WifiUtils";
-    private static final String BASE_IP_ADDRESS = "192.168.68."; //137
+    private static final String BASE_IP_ADDRESS = "172.92.1."; //137
     private static final int TIMEOUT_MS = 1000;
 
     @Override
@@ -67,12 +67,14 @@ public class WifiUtil extends AppCompatActivity {
                 }
             });
         }
+
+        Log.d(TAG, "startNetworkDiscovery: Done");
     }
 
     private String getHostName(String ipAddress) {
         try {
             InetAddress inetAddress = InetAddress.getByName(ipAddress);
-            return inetAddress.getCanonicalHostName();
+            return inetAddress.getHostName();
         } catch (UnknownHostException e) {
             Log.e(TAG, "Error getting host name: " + e.getMessage());
             return ipAddress;

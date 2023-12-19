@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private void setNavColor() {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setNavigationBarColor(getResources().getColor(R.color.main, getTheme()));
+        window.setNavigationBarColor(getResources().getColor(R.color.main_btm_nav, getTheme()));
     }
 
     private void loadFragment(Fragment fragment) {

@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -59,7 +60,7 @@ public class MessageActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         Uri uri = Uri.parse("content://sms/inbox");
 
-        Cursor cursor = contentResolver.query(uri, null, null, null, "date DESC LIMIT 20");
+        Cursor cursor = contentResolver.query(uri, null, null, null, "date DESC LIMIT 10");
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -76,6 +77,8 @@ public class MessageActivity extends AppCompatActivity {
         RecyclerView.Adapter<MessageAdapter.ViewHolder> adapter = new MessageAdapter(messageList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Log.d("MessageActivity", "readAndDisplayMessagesWithRecyclerView: " + messageList);
     }
 
     public void findSpam(View view) {

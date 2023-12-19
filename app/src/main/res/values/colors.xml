@@ -4,7 +4,9 @@
     <color name="white">#FFFFFFFF</color>
     <!--    <color name="main_light">#242342</color>-->
     <!--    <color name="main">#141423</color>-->
-    <color name="main_light">#221C1C</color>
-<!--    <color name="main_light">#222020</color>-->
-    <color name="main">#000000</color>
+    <!--    <color name="main_light">#221C1C</color>-->
+    <color name="main_light">#2D2E32</color>
+    <!--    <color name="main_light">#222020</color>-->
+    <color name="main">#191818</color>
+    <color name="main_btm_nav">#37383C</color>
 </resources>
