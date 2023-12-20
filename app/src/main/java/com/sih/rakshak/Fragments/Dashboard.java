@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -52,6 +54,7 @@ import com.sih.rakshak.WifiUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Dashboard extends Fragment {
 
@@ -64,6 +67,8 @@ public class Dashboard extends Fragment {
     private static final long LOOP_DELAY = 20;
     private Handler handler;
     View view;
+
+    List<AppInfo> appsListUpdate = new ArrayList<>();
 
     LinearLayout linearLayout1, linearLayout2;
 
@@ -124,14 +129,17 @@ public class Dashboard extends Fragment {
     private void setBatteryGraph() {
         LineChart lineChart = view.findViewById(R.id.lineChart);
 
-        // Example data for demonstration
         ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(1, 20));
-        entries.add(new Entry(2, 35));
-        entries.add(new Entry(3, 18));
-        entries.add(new Entry(4, 27));
+        entries.add(new Entry(1, 10));
+        entries.add(new Entry(2, 12));
+        entries.add(new Entry(3, 15));
+        entries.add(new Entry(4, 20));
+        entries.add(new Entry(5, 30));
+        entries.add(new Entry(6, 45));
+        entries.add(new Entry(7, 35));
+        entries.add(new Entry(8, 30));
 
-        LineDataSet dataSet = new LineDataSet(entries, "Label");
+        LineDataSet dataSet = new LineDataSet(entries, "Percentage");
         LineData lineData = new LineData(dataSet);
 
         lineChart.setData(lineData);
@@ -214,12 +222,12 @@ public class Dashboard extends Fragment {
         recyclerView.setAdapter(appListAdapter);
 
         recyclerView2.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        AppListAdapter appListAdapter2 = new AppListAdapter(appsList);
+        AppListAdapter appListAdapter2 = new AppListAdapter(appsListUpdate);
         recyclerView2.setAdapter(appListAdapter2);
 
     }
 
-    private List<AppInfo> getListOfInstalledApps() throws PackageManager.NameNotFoundException {
+    private List<AppInfo> getListOfInstalledApps() {
         List<AppInfo> appsList = new ArrayList<>();
 
         final Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -230,18 +238,35 @@ public class Dashboard extends Fragment {
 
         for (ResolveInfo ri : ril) {
             if (ri.activityInfo != null) {
-                Resources res = pm.getResourcesForApplication(ri.activityInfo.applicationInfo);
-                String name;
-                if (ri.activityInfo.labelRes != 0) {
-                    name = res.getString(ri.activityInfo.labelRes);
-                } else {
-                    name = ri.activityInfo.applicationInfo.loadLabel(pm).toString();
+                try {
+                    Resources res = pm.getResourcesForApplication(ri.activityInfo.applicationInfo);
+                    String name;
+                    if (ri.activityInfo.labelRes != 0) {
+                        name = res.getString(ri.activityInfo.labelRes);
+                    } else {
+                        name = ri.activityInfo.applicationInfo.loadLabel(pm).toString();
+                    }
+
+                    Drawable icon = ri.activityInfo.loadIcon(pm);
+
+                    AppInfo appInfo = new AppInfo(name, icon, ri);
+                    appsList.add(appInfo);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
                 }
+            }
+        }
 
-                Drawable icon = ri.activityInfo.loadIcon(pm);
-
-                AppInfo appInfo = new AppInfo(name, icon, ri);
-                appsList.add(appInfo);
+        long thirtyDaysAgoForUpdate = System.currentTimeMillis() - (3* 24 * 60 * 60 * 1000L);
+        for (AppInfo appInfo : appsList) {
+            try {
+                PackageInfo packageInfo = pm.getPackageInfo(appInfo.getResolveInfo().activityInfo.packageName, 0);
+                long lastUpdateTime = packageInfo.lastUpdateTime;
+                if (lastUpdateTime > thirtyDaysAgoForUpdate) {
+                    appsListUpdate.add(appInfo);
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
             }
         }
 

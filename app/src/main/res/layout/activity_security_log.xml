@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
-        app:title="Security Log"
+        app:title="Report Scan"
         app:titleTextColor="@color/white" />
 
     <androidx.core.widget.NestedScrollView
@@ -25,43 +25,29 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.airbnb.lottie.LottieAnimationView
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="300sp"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/searching"
-                app:lottie_repeatMode="reverse" />
+                android:layout_height="100sp"
+                android:padding="12sp"
+                android:src="@drawable/report" />
 
             <TextView
-                android:id="@+id/scanFeedLive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30sp"
-                android:layout_marginTop="35sp"
-                android:layout_marginEnd="30sp"
-                android:alpha="0.7"
-                android:ellipsize="start"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginEnd="20sp"
+                android:alpha="0.5"
                 android:gravity="center_horizontal"
-                android:padding="3sp"
-                android:text="Keep this screen alive for 2 Minutes"
+                android:text="Report your Scan history to enhance collaborative virus detection."
                 android:textColor="@color/white"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/logResult"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reportScans"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30sp"
-                android:layout_marginTop="20sp"
-                android:layout_marginEnd="30sp"
-                android:alpha="0.4"
-                android:gravity="start"
-                android:padding="3sp"
-                android:text="Scanning..."
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                tools:ignore="HardcodedText" />
+                android:layout_margin="12sp" />
 
         </LinearLayout>
 

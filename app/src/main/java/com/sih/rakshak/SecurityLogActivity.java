@@ -1,62 +1,65 @@
 package com.sih.rakshak;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.widget.TextView;
+import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-public class SecurityLogActivity extends AppCompatActivity {
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-    private TextView textView;
-    private Handler handler;
-    private volatile boolean stopLogging = false;
+public class SecurityLogActivity extends AppCompatActivity implements LogEntryAdapter.OnLogEntryClickListener {
+
+
+    private static final String PREF_KEY_LOG_ENTRIES = "log_entries";
+
+    private List<LogEntry> logEntries;
+    private RecyclerView recyclerView;
+    private LogEntryAdapter logEntryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_security_log);
 
-        textView = findViewById(R.id.logResult);
-        handler = new Handler();
+        logEntries = loadLogEntries();
 
-        displayLogs();
+        // Initialize RecyclerView and adapter
+        recyclerView = findViewById(R.id.reportScans);
+        logEntryAdapter = new LogEntryAdapter(logEntries, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(logEntryAdapter);
+
+    }
+
+    private List<LogEntry> loadLogEntries() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String jsonLogEntries = sharedPreferences.getString(PREF_KEY_LOG_ENTRIES, null);
+
+        Gson gson = new Gson();
+        Type logEntryType = new TypeToken<List<LogEntry>>() {
+        }.getType();
+
+        return gson.fromJson(jsonLogEntries, logEntryType);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopLogging = true;
-        handler.removeCallbacksAndMessages(null);
-    }
+    public void onLogEntryClick(int position) {
+        LogEntry clickedLogEntry = logEntries.get(position);
 
-    private void displayLogs() {
-        new Thread(() -> {
-            try {
-                Process process = Runtime.getRuntime().exec("logcat -d");
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-                StringBuilder log = new StringBuilder();
-                String line;
-
-                while (!stopLogging && (line = bufferedReader.readLine()) != null) {
-                    log.append(line).append("\n");
-
-                    String finalLogData = line;
-                    handler.post(() -> textView.setText(finalLogData));
-                    Log.d("DeviceLog", "displayLogs: " + log);
-
-                    Thread.sleep(500);
-                }
-
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        // Start AppReportActivity and pass the clicked log entry data
+        Intent intent = new Intent(this, AppReportActivity.class);
+        intent.putExtra("timestamp", clickedLogEntry.getTimestamp());
+        intent.putParcelableArrayListExtra("appInfoList", new ArrayList<>(clickedLogEntry.getAppInfoList()));
+        intent.putStringArrayListExtra("probability", new ArrayList<>(clickedLogEntry.getAppProbabilityList()));
+        startActivity(intent);
     }
 }

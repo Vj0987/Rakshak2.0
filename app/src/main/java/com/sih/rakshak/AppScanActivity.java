@@ -1,12 +1,15 @@
 package com.sih.rakshak;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,12 +18,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -39,6 +49,10 @@ public class AppScanActivity extends AppCompatActivity {
 
     List<ApplicationInfo> appInfo = new ArrayList<>();
     List<String> appProbability = new ArrayList<>();
+
+    private static final String PREF_KEY_LOG_ENTRIES = "log_entries";
+
+    private List<LogEntry> logEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +116,7 @@ public class AppScanActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
                 Log.d("RESULT-APP-E", "onResponse: " + t);
             }
         });
@@ -128,7 +142,6 @@ public class AppScanActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setResultWithText(int prob) {
-
         if (prob > 75) {
             cnt1++;
             malApp.setText(cnt1 + " ");
@@ -165,10 +178,44 @@ public class AppScanActivity extends AppCompatActivity {
     }
 
     public void openReport(View view) {
+        logEntries = loadLogEntries();
+
+        LogEntry logEntry = new LogEntry(String.valueOf(System.currentTimeMillis()), appInfo, appProbability);
+
+        if (logEntries == null) {
+            logEntries = new ArrayList<>();
+        }
+
+        logEntries.add(logEntry);
+        saveLogEntriesToSharedPreferences(logEntries);
+
         Intent intent = new Intent(this, AppReportActivity.class);
         intent.putParcelableArrayListExtra("appInfoList", new ArrayList<>(appInfo));
         intent.putStringArrayListExtra("probability", new ArrayList<>(appProbability));
         startActivity(intent);
 
+    }
+
+    private void saveLogEntriesToSharedPreferences(List<LogEntry> logEntries) {
+        Gson gson = new Gson();
+        String jsonLogEntries = gson.toJson(logEntries);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PREF_KEY_LOG_ENTRIES, jsonLogEntries);
+        editor.apply();
+    }
+
+    private List<LogEntry> loadLogEntries() {
+        // Retrieve existing log entries from SharedPreferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String jsonLogEntries = sharedPreferences.getString(PREF_KEY_LOG_ENTRIES, null);
+
+        // Convert JSON back to ArrayList using Gson
+        Gson gson = new Gson();
+        Type logEntryType = new TypeToken<List<LogEntry>>() {
+        }.getType();
+
+        return gson.fromJson(jsonLogEntries, logEntryType);
     }
 }

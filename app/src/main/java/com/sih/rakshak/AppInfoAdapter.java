@@ -1,9 +1,11 @@
 package com.sih.rakshak;
 
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,7 +23,7 @@ public class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_app_vertical, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_app_vertical_green, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -39,11 +41,13 @@ public class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView appNameTextView;
         private final TextView appProbabilityTextView;
+        private final ImageView appIconImageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             appNameTextView = itemView.findViewById(R.id.appNameTextView);
             appProbabilityTextView = itemView.findViewById(R.id.appVersionTextView);
+            appIconImageView = itemView.findViewById(R.id.appIconImageView);
         }
 
         public void bind(AppInfoItem appInfoItem) {
@@ -51,7 +55,21 @@ public class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.ViewHold
             String appProbability = appInfoItem.getAppProbability();
 
             appNameTextView.setText(applicationInfo.loadLabel(itemView.getContext().getPackageManager()));
-            appProbabilityTextView.setText(appProbability);
+            appProbabilityTextView.setText(getProbableText(appProbability));
+
+            PackageManager pm = itemView.getContext().getPackageManager();
+            appIconImageView.setImageDrawable(applicationInfo.loadIcon(pm));
+
+
+        }
+
+        private String getProbableText(String appProbability) {
+
+            if (Integer.parseInt(appProbability) < 80) {
+                return "Safe";
+            }
+
+            return "";
         }
     }
 }

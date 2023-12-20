@@ -1,26 +1,23 @@
 package com.sih.rakshak;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -29,46 +26,52 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CheckURLActivity extends AppCompatActivity {
+public class CustomDialog {
 
-    TextInputEditText textInputEditText;
+    @SuppressLint("StaticFieldLeak")
+    static TextView messageTextView;
 
-    static TextView resultT, meta;
+    public static void show(Context context, String title) {
+        final Dialog dialog = new Dialog(context);
 
-    static MaterialCardView cardView;
+        String ip = extractIPAddress(title);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check_urlactivity);
+        new UrlCheckerTask().execute(ip);
 
-        textInputEditText = findViewById(R.id.urlLink);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog);
 
-        resultT = findViewById(R.id.resultText);
-        meta = findViewById(R.id.metaText);
+        TextView titleTextView = dialog.findViewById(R.id.titleTextView);
+        messageTextView = dialog.findViewById(R.id.messageTextView);
 
-        cardView = findViewById(R.id.outPutCard);
+        titleTextView.setText(title);
+        messageTextView.setText(title);
+
+        dialog.show();
     }
 
-    public void submitUrl(View view) {
+    private static String extractIPAddress(String input) {
+        // Define the pattern for matching IP addresses
+        Pattern pattern = Pattern.compile("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b");
 
-        if (Objects.requireNonNull(textInputEditText.getText()).toString().isEmpty()) {
-            Toast.makeText(this, "Enter URL", Toast.LENGTH_SHORT).show();
+        // Create a matcher object
+        Matcher matcher = pattern.matcher(input);
+
+        // Find the IP address in the input string
+        if (matcher.find()) {
+            // Use substring to extract the matched IP address
+            return matcher.group();
         } else {
-            checkURL(Objects.requireNonNull(textInputEditText.getText()).toString());
+            return null;
         }
-
-    }
-
-    private void checkURL(String url) {
-        new UrlCheckerTask().execute(url);
     }
 
     public static class UrlCheckerTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
-            String apiUrl = "http://172.92.1.45:5000/sha?url=" + params[0];
+            Log.e("UrlCheckerTask", "Error checking URL: " + params);
+            String apiUrl = "http://172.92.1.125:5000/get_ip?key=" + params[0];
 
             try {
                 URL url = new URL(apiUrl);
@@ -97,21 +100,12 @@ public class CheckURLActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                cardView.setVisibility(View.VISIBLE);
+                // Handle the result from the Flask API
                 Log.d("UrlCheckerTask", "API Response: " + result);
-                resultT.setText(result);
 
-                if (result.equals("1C")) {
-                    resultT.setText("The link is Malicious");
-                    Toast.makeText(meta.getContext(), "Database Updated Successfully", Toast.LENGTH_LONG).show();
-                } else {
-                    if (result.equals("1")) {
-                        resultT.setText("The link is Malicious");
-                    } else {
-                        resultT.setText("The link is Malicious");
-                    }
-                }
+                messageTextView.setText("Risk Percentage: " + result + "");
             } else {
+                // Handle the case where there was an error
                 Log.e("UrlCheckerTask", "API Request failed");
             }
         }

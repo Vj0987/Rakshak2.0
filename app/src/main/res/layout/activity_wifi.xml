@@ -25,11 +25,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="match_parent"
                 android:layout_height="200sp"
-                android:alpha="0.5"
-                android:src="@drawable/wifi_static" />
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/wifi_a"
+                app:lottie_repeatMode="reverse" />
 
             <TextView
                 android:id="@+id/checkingUpdate"
@@ -38,23 +40,29 @@
                 android:layout_marginStart="30sp"
                 android:layout_marginTop="35sp"
                 android:layout_marginEnd="30sp"
+                android:layout_marginBottom="20sp"
                 android:alpha="0.7"
                 android:ellipsize="start"
                 android:gravity="center_horizontal"
                 android:padding="3sp"
                 android:text="Checking Wifi Connections..."
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/wifiList"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30sp"
-                android:layout_marginTop="35sp"
-                android:layout_marginEnd="30sp"
-                android:padding="3sp"
-                android:text=""
-                android:textColor="@color/white" />
+                android:layout_margin="22sp"
+                app:cardBackgroundColor="@color/main_light"
+                app:cardCornerRadius="12sp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/hotspotList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15sp" />
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 

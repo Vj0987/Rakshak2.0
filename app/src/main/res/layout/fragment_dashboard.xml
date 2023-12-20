@@ -261,7 +261,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:layout_marginTop="20sp"
                     android:orientation="horizontal"
                     android:weightSum="2">
@@ -330,7 +329,7 @@
                                 android:layout_width="38sp"
                                 android:layout_height="38sp"
                                 android:layout_margin="10sp"
-                                android:src="@drawable/record_log_ic"
+                                android:src="@drawable/report"
                                 tools:ignore="ContentDescription" />
 
                             <TextView
@@ -341,7 +340,7 @@
                                 android:layout_marginEnd="10sp"
                                 android:alpha="0.8"
                                 android:singleLine="true"
-                                android:text="Security Log"
+                                android:text="Report"
                                 android:textColor="@color/white"
                                 android:textSize="16sp"
                                 tools:ignore="HardcodedText" />
@@ -404,7 +403,7 @@
                                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                                 tools:listitem="@layout/item_app" />
 
-                            <de.hdodenhof.circleimageview.CircleImageView
+                            <com.airbnb.lottie.LottieAnimationView
                                 android:id="@+id/moreApps"
                                 android:layout_width="0dp"
                                 android:layout_height="60sp"
@@ -413,8 +412,10 @@
                                 android:layout_marginEnd="5sp"
                                 android:layout_marginBottom="10sp"
                                 android:layout_weight="1"
-                                android:src="@drawable/forward_arrow"
-                                app:civ_circle_background_color="@color/main" />
+                                app:lottie_autoPlay="true"
+                                app:lottie_loop="true"
+                                app:lottie_rawRes="@raw/fwd"
+                                app:lottie_repeatMode="reverse" />
 
                         </LinearLayout>
 
@@ -470,7 +471,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10sp"
                             android:alpha="0.8"
-                            android:text="Check Un-updated Apps for few time..."
+                            android:text="Check Un-updated Apps for 30 days"
                             android:textColor="@color/white"
                             android:textSize="15sp"
                             tools:ignore="HardcodedText" />

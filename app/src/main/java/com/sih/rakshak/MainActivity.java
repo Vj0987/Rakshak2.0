@@ -1,12 +1,16 @@
 package com.sih.rakshak;
 
 import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
         loadFragment(new Dashboard());
 
+        startJob();
+
         calculateApkHash();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -48,6 +54,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void startJob() {
+        ComponentName componentName = new ComponentName(this, ExampleJavaService.class);
+        JobInfo info = new JobInfo.Builder(123, componentName)
+                .setRequiresCharging(true)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.schedule(info);
+
+        int resultCode = scheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS){
+            Toast.makeText(this, "Scheduled Scan", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setNavColor() {

@@ -25,13 +25,22 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/appIcon"
-                android:layout_width="50sp"
-                android:layout_height="50sp"
+            <FrameLayout
+                android:id="@+id/backgroundFrame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="22sp"
-                android:src="@color/main_light" />
+                android:padding="5sp">
+
+                <ImageView
+                    android:id="@+id/appIcon"
+                    android:layout_width="55sp"
+                    android:layout_height="55sp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@color/main_light" />
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/NameApp"
@@ -184,8 +193,8 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30sp"
                 android:layout_marginStart="20sp"
+                android:layout_marginTop="30sp"
                 android:layout_marginEnd="20sp"
                 android:layout_marginBottom="30sp"
                 app:cardBackgroundColor="@color/main_light"
