@@ -156,7 +156,7 @@ public class AppInfoActivity extends AppCompatActivity {
     private void sendSHARequest(String shaKey) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).writeTimeout(30, TimeUnit.SECONDS).build();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://172.92.1.42:5000/").addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://192.168.193.251/").addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build();
 
         ApiService apiService = retrofit.create(ApiService.class);
 

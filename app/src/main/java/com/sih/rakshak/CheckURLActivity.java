@@ -68,7 +68,7 @@ public class CheckURLActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            String apiUrl = "http://172.92.1.45:5000/sha?url=" + params[0];
+            String apiUrl = "http://192.168.193.100:5000/sha?url=" + params[0];
 
             try {
                 URL url = new URL(apiUrl);

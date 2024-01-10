@@ -25,7 +25,7 @@ public class WifiUtil extends AppCompatActivity {
     private ExecutorService executorService;
 
     private static final String TAG = "WifiUtils";
-    private static final String BASE_IP_ADDRESS = "172.92.1."; //137
+    private static final String BASE_IP_ADDRESS = "192.168.193."; //137
     private static final int TIMEOUT_MS = 1000;
 
     private RecyclerView recyclerView;

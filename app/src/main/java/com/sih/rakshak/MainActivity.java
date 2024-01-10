@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
         JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
         scheduler.schedule(info);
 
-        int resultCode = scheduler.schedule(info);
-        if (resultCode == JobScheduler.RESULT_SUCCESS){
-            Toast.makeText(this, "Scheduled Scan", Toast.LENGTH_SHORT).show();
-        }
+//        int resultCode = scheduler.schedule(info);
+//        if (resultCode == JobScheduler.RESULT_SUCCESS){
+//            Toast.makeText(this, "Scheduled Scan", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private void setNavColor() {
